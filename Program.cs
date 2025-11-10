@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using BookQuoteAPI.Data;
+using BookQuoteAPI.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
