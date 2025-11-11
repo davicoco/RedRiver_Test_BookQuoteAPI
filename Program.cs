@@ -67,5 +67,39 @@ app.MapDelete("/api/books/{id}", async (AppDbContext context, int id) =>
     await context.SaveChangesAsync();
     return Results.NoContent();
 });
+
+app.MapGet("/api/quotes", async (AppDbContext context) =>
+{
+    return await context.Quotes.ToListAsync();
+});
+
+app.MapPost("/api/quotes/{id}", async (AppDbContext context, Quote quote) =>
+{
+    context.Quotes.Add(quote);
+    await context.SaveChangesAsync();
+    return Results.Created($"/api/quotes/{quote.Id}", quote);
+});
+
+app.MapPut("/api/quotes/{id}", async (AppDbContext context, int id, Quote updatedQuote) =>
+{
+    var quote = await context.Quotes.FindAsync(id);
+    if (quote == null) return Results.NotFound();
+
+    quote.QuoteText = updatedQuote.QuoteText;
+    quote.Author = updatedQuote.QuoteText;
+
+    await context.SaveChangesAsync();
+    return Results.Ok(quote);
+});
+
+app.MapDelete("/api/quotes/{id}", async (AppDbContext context, int id) =>
+{
+    var quote = await context.Quotes.FindAsync(id);
+    if (quote == null) return Results.NotFound();
+
+    context.Quotes.Remove(quote);
+    await context.SaveChangesAsync();
+    return Results.NoContent();
+});
 app.Run();
 
