@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using BookQuoteAPI.Data;
 using BookQuoteAPI.Models;
 using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,8 +74,9 @@ app.MapGet("/api/quotes", async (AppDbContext context) =>
     return await context.Quotes.ToListAsync();
 });
 
-app.MapPost("/api/quotes/{id}", async (AppDbContext context, Quote quote) =>
+app.MapPost("/api/quotes", async (AppDbContext context, Quote quote) =>
 {
+    
     context.Quotes.Add(quote);
     await context.SaveChangesAsync();
     return Results.Created($"/api/quotes/{quote.Id}", quote);
