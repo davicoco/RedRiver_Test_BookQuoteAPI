@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using BookQuoteAPI.Models;
 using BookQuoteAPI.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookQuoteAPI.Controllers
 {
@@ -48,7 +49,7 @@ namespace BookQuoteAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto request)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == request.Email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user == null)
             {

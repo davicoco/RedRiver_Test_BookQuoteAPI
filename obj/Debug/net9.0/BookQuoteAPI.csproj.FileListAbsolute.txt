@@ -126,3 +126,12 @@ C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo
 C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\obj\Debug\net9.0\BookQuoteAPI.pdb
 C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\obj\Debug\net9.0\BookQuoteAPI.genruntimeconfig.cache
 C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\obj\Debug\net9.0\ref\BookQuoteAPI.dll
+C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\bin\Debug\net9.0\BCrypt.Net-Next.dll
+C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll

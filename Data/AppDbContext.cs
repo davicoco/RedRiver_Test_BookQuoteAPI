@@ -12,6 +12,6 @@ namespace BookQuoteAPI.Data
 
         public DbSet<Book> Books { get; set; }
         public DbSet<Quote> Quotes { get; set; }
-        public DbSet<Quote> Users { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
