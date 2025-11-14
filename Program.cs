@@ -26,7 +26,7 @@ builder.Services.AddCors(options =>
         policy => policy
         .WithOrigins(
             "http://localhost:4200",
-            "https://vermillion-mooncake-01ea7b.netlify.app//"
+            "https://vermillion-mooncake-01ea7b.netlify.app/"
         )
         .AllowAnyOrigin()
         .AllowAnyMethod()
