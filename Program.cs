@@ -24,6 +24,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular",
         policy => policy
+        .WithOrigins(
+            "http://localhost:4200",
+            "https://sprightly-naiad-32ea32.netlify.app/"
+        )
         .AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader());
