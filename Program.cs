@@ -23,9 +23,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular",
-        policy => policy.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
+        policy => policy
+        .WithOrigins(
+            "http://localhost:4200"
+        )
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -193,6 +197,6 @@ static string CreateToken(User user, IConfiguration config)
         signingCredentials: creds
     );
 
-    return new JwtSecurityTokenHandler().WriteToken(token);    
+    return new JwtSecurityTokenHandler().WriteToken(token);
 }
 
