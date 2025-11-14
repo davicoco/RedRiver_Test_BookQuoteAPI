@@ -6,6 +6,9 @@ using Microsoft.VisualBasic;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -122,5 +125,74 @@ app.MapDelete("/api/quotes/{id}", async (AppDbContext context, int id) =>
     await context.SaveChangesAsync();
     return Results.NoContent();
 }).RequireAuthorization();
+
+app.MapPost("/auth/register", async (AppDbContext context, [FromBody] RegisterDto registerDto, IConfiguration config) =>
+{
+    if (await context.Users.AnyAsync(u => u.Email == registerDto.Email))
+    {
+        return Results.BadRequest(new { message = "Användare finns redan" });
+    }
+
+    //skapa pw hash
+    string passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
+
+    var user = new User
+    {
+        Username = registerDto.Username,
+        Email = registerDto.Email,
+        PasswordHash = passwordHash
+    };
+
+    context.Users.Add(user);
+    await context.SaveChangesAsync();
+
+    //generera token
+    string token = CreateToken(user, config);
+
+    return Results.Ok(new { token, email = user.Email });
+});
+
+app.MapPost("/auth/login", async (AppDbContext context, [FromBody] LoginDto loginDto, IConfiguration config) =>
+{
+
+    var user = await context.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+
+    if (user == null)
+    {
+        return Results.BadRequest(new { message = "Ogiltiga uppgifter!" });
+    }
+
+    if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
+    {
+        return Results.BadRequest(new { message = "Ogiltiga uppgifter" });
+    }
+
+    string token = CreateToken(user, config);
+
+    return Results.Ok(new { token, email = user.Email });
+});
+
 app.Run();
+
+static string CreateToken(User user, IConfiguration config)
+{
+    List<Claim> claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Name, user.Username)
+    };
+
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+        config.GetSection("AppSettings:Token").Value!));
+
+    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+    var token = new JwtSecurityToken(
+        claims: claims,
+        expires: DateTime.Now.AddDays(1),
+        signingCredentials: creds
+    );
+
+    return new JwtSecurityTokenHandler().WriteToken(token);    
+}
 
