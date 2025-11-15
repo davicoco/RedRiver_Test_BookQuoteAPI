@@ -33,6 +33,7 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader());
 });
 
+//Validerar token
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(Options =>
     {
@@ -132,7 +133,9 @@ app.MapDelete("/api/quotes/{id}", async (AppDbContext context, int id) =>
 }).RequireAuthorization();
 
 app.MapPost("/auth/register", async (AppDbContext context, [FromBody] RegisterDto registerDto, IConfiguration config) =>
-{
+{   
+
+    //kollar om användare redan finns
     if (await context.Users.AnyAsync(u => u.Email == registerDto.Email))
     {
         return Results.BadRequest(new { message = "Användare finns redan" });
@@ -141,6 +144,7 @@ app.MapPost("/auth/register", async (AppDbContext context, [FromBody] RegisterDt
     //skapa pw hash
     string passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
 
+    //skapar user
     var user = new User
     {
         Username = registerDto.Username,
@@ -148,12 +152,14 @@ app.MapPost("/auth/register", async (AppDbContext context, [FromBody] RegisterDt
         PasswordHash = passwordHash
     };
 
+    //lägger till user i inMemory databas
     context.Users.Add(user);
     await context.SaveChangesAsync();
 
     //generera token
     string token = CreateToken(user, config);
 
+    //skickar tillbaka med token
     return Results.Ok(new { token, email = user.Email });
 });
 
