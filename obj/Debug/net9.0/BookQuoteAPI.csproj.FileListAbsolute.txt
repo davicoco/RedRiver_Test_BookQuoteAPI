@@ -135,3 +135,4 @@ C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo
 C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Fätch\VisualStudioProjects\RR Consulting & Software AB\David_Izquierdo_RR_Test\BookQuoteAPI\BookQuoteAPI\obj\Debug\net9.0\BookQuoteAPI.sourcelink.json
