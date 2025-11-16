@@ -13,13 +13,14 @@ using Microsoft.AspNetCore.Mvc;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
+// Configure in-memory database for development/testing
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseInMemoryDatabase("BookQuoteDB"));
 
+// Configure CORS to allow requests from Angular frontend
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular",
@@ -33,7 +34,8 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader());
 });
 
-//Validerar token
+// Configure JWT authentication
+// Validates token signature, expiration, and claims on protected endpoints
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(Options =>
     {
@@ -57,15 +59,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAngular");
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication();// Enable JWT authentication middleware
+app.UseAuthorization();// Enable authorization checks
 app.MapControllers();
 
+// GET all books - Protected endpoint (requires valid JWT token)
 app.MapGet("/api/books", async (AppDbContext context) =>
 {
     return await context.Books.ToListAsync();
 }).RequireAuthorization();
 
+// POST create new book - Protected endpoint
 app.MapPost("/api/books", async (AppDbContext context, Book book) =>
 {
     context.Books.Add(book);
@@ -73,6 +77,7 @@ app.MapPost("/api/books", async (AppDbContext context, Book book) =>
     return Results.Created($"/api/books/{book.Id}", book);
 }).RequireAuthorization();
 
+// PUT update existing book - Protected endpoint
 app.MapPut("/api/books/{id}", async (AppDbContext context, int id, Book updatedBook) =>
 {
     var book = await context.Books.FindAsync(id);
@@ -87,6 +92,7 @@ app.MapPut("/api/books/{id}", async (AppDbContext context, int id, Book updatedB
     return Results.Ok(book);
 }).RequireAuthorization();
 
+// DELETE book - Protected endpoint
 app.MapDelete("/api/books/{id}", async (AppDbContext context, int id) =>
 {
     var book = await context.Books.FindAsync(id);
@@ -97,11 +103,13 @@ app.MapDelete("/api/books/{id}", async (AppDbContext context, int id) =>
     return Results.NoContent();
 }).RequireAuthorization();
 
+// GET all quotes - Protected endpoint (requires valid JWT token)
 app.MapGet("/api/quotes", async (AppDbContext context) =>
 {
     return await context.Quotes.ToListAsync();
 }).RequireAuthorization();
 
+// POST create new quote - Protected endpoint
 app.MapPost("/api/quotes", async (AppDbContext context, Quote quote) =>
 {
 
@@ -110,6 +118,7 @@ app.MapPost("/api/quotes", async (AppDbContext context, Quote quote) =>
     return Results.Created($"/api/quotes/{quote.Id}", quote);
 }).RequireAuthorization();
 
+// PUT update existing quote - Protected endpoint
 app.MapPut("/api/quotes/{id}", async (AppDbContext context, int id, Quote updatedQuote) =>
 {
     var quote = await context.Quotes.FindAsync(id);
@@ -122,6 +131,7 @@ app.MapPut("/api/quotes/{id}", async (AppDbContext context, int id, Quote update
     return Results.Ok(quote);
 }).RequireAuthorization();
 
+// DELETE quote - Protected endpoint
 app.MapDelete("/api/quotes/{id}", async (AppDbContext context, int id) =>
 {
     var quote = await context.Quotes.FindAsync(id);
@@ -132,19 +142,20 @@ app.MapDelete("/api/quotes/{id}", async (AppDbContext context, int id) =>
     return Results.NoContent();
 }).RequireAuthorization();
 
+// POST register new user - Public endpoint (no authentication required)
 app.MapPost("/auth/register", async (AppDbContext context, [FromBody] RegisterDto registerDto, IConfiguration config) =>
 {   
 
-    //kollar om användare redan finns
+    // Check if user already exists
     if (await context.Users.AnyAsync(u => u.Email == registerDto.Email))
     {
         return Results.BadRequest(new { message = "Användare finns redan" });
     }
 
-    //skapa pw hash
+    // Hash password before storing 
     string passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
 
-    //skapar user
+    // Create new user with hashed password
     var user = new User
     {
         Username = registerDto.Username,
@@ -152,17 +163,17 @@ app.MapPost("/auth/register", async (AppDbContext context, [FromBody] RegisterDt
         PasswordHash = passwordHash
     };
 
-    //lägger till user i inMemory databas
+    // Save to database
     context.Users.Add(user);
     await context.SaveChangesAsync();
 
-    //generera token
+    // Generate JWT token for automatic login after registration
     string token = CreateToken(user, config);
 
-    //skickar tillbaka med token
     return Results.Ok(new { token, email = user.Email });
 });
 
+// POST login user - Public endpoint (no authentication required)
 app.MapPost("/auth/login", async (AppDbContext context, [FromBody] LoginDto loginDto, IConfiguration config) =>
 {
 
@@ -185,25 +196,31 @@ app.MapPost("/auth/login", async (AppDbContext context, [FromBody] LoginDto logi
 
 app.Run();
 
+// Creates a JWT token for authenticated user
 static string CreateToken(User user, IConfiguration config)
-{
+{   
+    // Step 1: Create claims (user data stored in token)
     List<Claim> claims = new List<Claim>
     {
         new Claim(ClaimTypes.Email, user.Email),
         new Claim(ClaimTypes.Name, user.Username)
     };
 
+    // Step 2: Get secret key from configuration
     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
         config.GetSection("AppSettings:Token").Value!));
 
+    // Step 3: Create signing credentials using HMAC SHA512
     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
+    // Step 4: Build JWT token with claims and 1-day expiration
     var token = new JwtSecurityToken(
         claims: claims,
         expires: DateTime.Now.AddDays(1),
         signingCredentials: creds
     );
 
+    // Step 5: Convert token to string format
     return new JwtSecurityTokenHandler().WriteToken(token);
 }
 
