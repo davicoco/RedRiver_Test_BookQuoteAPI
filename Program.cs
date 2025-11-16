@@ -51,6 +51,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
+// Seed initial data for demo purposes
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    
+    // Only seed if database is empty
+    if (!context.Quotes.Any())
+    {
+        context.Quotes.AddRange(
+            new Quote { QuoteText = "The only thing we have to fear is fear itself.", Author = "Franklin D. Roosevelt " },
+            new Quote { QuoteText = "The most effective way to do it, is to do it.", Author = "Unknown" },
+            new Quote { QuoteText = "Code is like humor. When you have to explain it, it's bad.", Author = "Cory House" },
+            new Quote { QuoteText = "Yesterday is history, tomorrow is a mystery, today is a gift of God, which is why we call it the present.", Author = "Bil Keane " },
+            new Quote { QuoteText = "The journey of a thousand miles begins with one step.", Author = "Lao Tzu " }
+        );
+        context.SaveChanges();
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
