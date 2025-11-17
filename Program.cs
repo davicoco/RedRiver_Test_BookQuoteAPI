@@ -61,7 +61,7 @@ using (var scope = app.Services.CreateScope())
     {
         context.Quotes.AddRange(
             new Quote { QuoteText = "The only thing we have to fear is fear itself.", Author = "Franklin D. Roosevelt " },
-            new Quote { QuoteText = "The most effective way to do it, is to do it.", Author = "Unknown" },
+            new Quote { QuoteText = "I fear not the man who has practiced 10,000 kicks once, but I fear the man who has practiced one kick 10,000 times", Author = "Bruce Lee" },
             new Quote { QuoteText = "Code is like humor. When you have to explain it, it's bad.", Author = "Cory House" },
             new Quote { QuoteText = "Yesterday is history, tomorrow is a mystery, today is a gift of God, which is why we call it the present.", Author = "Bil Keane " },
             new Quote { QuoteText = "The journey of a thousand miles begins with one step.", Author = "Lao Tzu " }
