@@ -4,6 +4,7 @@ REST API for the Book Quote application.
 Built as a technical test for an internship at Red River Consulting & Software AB.
 
 **Live API:** https://redriver-test-bookquoteapi.onrender.com
+
 **Frontend repo:** https://github.com/davicoco/RedRiver_Test_BookQuoteAPP
 
 ## Stack
